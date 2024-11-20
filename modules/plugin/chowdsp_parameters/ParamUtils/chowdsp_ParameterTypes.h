@@ -93,10 +93,13 @@ class ChoiceParameter : public juce::AudioParameterChoice,
                         public ParamUtils::ModParameterMixin
 {
 public:
-    ChoiceParameter (const ParameterID& parameterID, const juce::String& parameterName, const juce::StringArray& parameterChoices, int defaultItemIndex)
-        : juce::AudioParameterChoice (parameterID, parameterName, parameterChoices, defaultItemIndex),
+    ChoiceParameter (const ParameterID& parameterID, const juce::String& parameterName, std::atomic<float>* valuePtr,
+                         const std::function<void ( float)>& setterFunc, const juce::StringArray& parameterChoices,
+        int defaultItemIndex)
+        : juce::AudioParameterChoice (parameterID, parameterName, parameterChoices, defaultItemIndex, valuePtr),
           defaultChoiceIndex (defaultItemIndex)
     {
+        setFunc = std::move(setterFunc);
     }
     void printDebug() const
     {
@@ -107,7 +110,7 @@ public:
 
     /** Returns the default value for the parameter. */
     int getDefaultIndex() const noexcept { return defaultChoiceIndex; }
-
+    std::function<void ( float)> setFunc;
 private:
     const int defaultChoiceIndex = 0;
 
@@ -132,14 +135,18 @@ public:
     EnumChoiceParameter (const ParameterID& parameterID,
                          const juce::String& parameterName,
                          EnumType defaultChoice,
+                         std::atomic<float>* valuePtr,
+                         const std::function<void ( float)>& setterFunc,
                          const std::initializer_list<std::pair<char, char>>& charMap = { { '_', ' ' } })
         : ChoiceParameter (
             parameterID,
             parameterName,
+            valuePtr,
+            setterFunc,
             EnumHelpers::createStringArray<EnumType> (charMap),
             static_cast<int> (*magic_enum::enum_index (defaultChoice)))
-    {
-    }
+    {}
+
 
     EnumType get() const noexcept
     {

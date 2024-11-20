@@ -33,6 +33,7 @@ void ComboBoxAttachment::setValue (int newValue)
     {
         juce::ScopedValueSetter svs { skipBoxChangedCallback, true };
         comboBox->setSelectedItemIndex (newValue, juce::sendNotificationSync);
+        attachment.param->setFunc(attachment.param->convertTo0to1(newValue));
     }
 }
 
