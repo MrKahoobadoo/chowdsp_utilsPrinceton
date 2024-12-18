@@ -298,10 +298,9 @@ class TimeMsParameter : public FloatParameter
 public:
     TimeMsParameter (const ParameterID& parameterID,
                      const juce::String& paramName,
-                     std::atomic<float> *valuePtr,
-                     const std::function<void ( float)>& setterFunc,
                      const juce::NormalisableRange<float>& paramRange,
-                     float defaultValue)
+                     float defaultValue,  std::atomic<float> *valuePtr,
+                     const std::function<void ( float)>& setterFunc)
         : FloatParameter (parameterID,
                           paramName,
                           paramRange,
