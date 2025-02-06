@@ -79,7 +79,31 @@ public:
         DBG(paramID + " : " + juce::String(get()));
     }
     std::function<void ( float)> setFunc;
+
+//     FloatParameter& operator= (float newValue){
+//         if (! juce::approximatelyEqual ((float) convertFrom0to1(*_value), newValue))
+//             setValueNotifyingHost (convertTo0to1 (newValue));
+//
+//         return *this;
+//     }
+//     juce::AudioParameterFloat& operator= (float newValue)
+//     {
+//         if (! juce::approximatelyEqual ((float)convertFrom0to1( *_value), newValue))
+//             setValueNotifyingHost (convertTo0to1 (newValue));
+//
+//         return *this;
+//     }
+    void valueChanged(float val) override
+    {
+        *_0to1value = convertTo0to1(val);
+    }
 private:
+//    float getValue() const override
+//    {
+//        return *_0to1value;
+//    }
+
+    std::atomic<float>* _0to1value;
     const float unsnappedDefault;
     const juce::NormalisableRange<float> normalisableRange;
 

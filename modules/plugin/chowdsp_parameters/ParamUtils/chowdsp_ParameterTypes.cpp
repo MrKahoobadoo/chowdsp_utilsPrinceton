@@ -31,7 +31,6 @@ FloatParameter::FloatParameter (const ParameterID& parameterID,
         parameterName,
         valueRange,
         defaultFloatValue,
-        valuePtr,
         juce::AudioParameterFloatAttributes()
             .withStringFromValueFunction (
                 [valueToTextFunction] (float v, int)
@@ -41,6 +40,7 @@ FloatParameter::FloatParameter (const ParameterID& parameterID,
       unsnappedDefault (valueRange.convertTo0to1 (defaultFloatValue)),
       normalisableRange (valueRange)
 {
+    _0to1value = valuePtr;
     setFunc = std::move(setterFunc);
 }
 
