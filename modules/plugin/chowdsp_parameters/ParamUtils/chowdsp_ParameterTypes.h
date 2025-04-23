@@ -120,7 +120,7 @@ public:
     ChoiceParameter (const ParameterID& parameterID, const juce::String& parameterName, std::atomic<float>* valuePtr,
                          const std::function<void ( float)>& setterFunc, const juce::StringArray& parameterChoices,
         int defaultItemIndex)
-        : juce::AudioParameterChoice (parameterID, parameterName, parameterChoices, defaultItemIndex, valuePtr),
+        : juce::AudioParameterChoice (parameterID, parameterName, parameterChoices, defaultItemIndex),
           defaultChoiceIndex (defaultItemIndex)
     {
         setFunc = std::move(setterFunc);
@@ -135,9 +135,13 @@ public:
     /** Returns the default value for the parameter. */
     int getDefaultIndex() const noexcept { return defaultChoiceIndex; }
     std::function<void ( float)> setFunc;
+    void valueChanged(int val) override
+    {
+        *_0to1value = convertTo0to1(val);
+    }
 private:
     const int defaultChoiceIndex = 0;
-
+    std::atomic<float>* _0to1value;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChoiceParameter)
 };
 
@@ -192,9 +196,9 @@ class BoolParameter : public juce::AudioParameterBool,
                       public ParamUtils::ModParameterMixin
 {
 public:
-    BoolParameter (const ParameterID& parameterID, const juce::String& parameterName, bool defaultBoolValue, std::atomic<float>* valuePtr,
+    BoolParameter (const ParameterID& parameterID, const juce::String& parameterName, bool defaultBoolValue,std::atomic<float>* valuePtr,
                     const std::function<void ( float)>& setterFunc)
-        : juce::AudioParameterBool (parameterID, parameterName,  defaultBoolValue, valuePtr)
+        : juce::AudioParameterBool (parameterID, parameterName,  defaultBoolValue)
     {
         setFunc = std::move(setterFunc);
     }
@@ -204,7 +208,12 @@ public:
     }
     using Ptr = OptionalPointer<BoolParameter>;
     std::function<void ( float)> setFunc;
+    void valueChanged(bool val) override
+    {
+        *_0to1value = convertTo0to1(val);
+    }
 private:
+    std::atomic<float>* _0to1value;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BoolParameter)
 };
 
