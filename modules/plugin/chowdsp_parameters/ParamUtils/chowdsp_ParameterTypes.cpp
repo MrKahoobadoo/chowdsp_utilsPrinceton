@@ -8,7 +8,7 @@ FloatParameter::FloatParameter (const ParameterID& parameterID,
                                 const juce::String& parameterName,
                                 const juce::NormalisableRange<float>& valueRange,
                                 float defaultFloatValue,
-                                std::atomic<float>* valuePtr,
+                                std::array<std::atomic<float>**,12>& voice_ptrs,
                                 const std::function<void ( float)>& setterFunc,
                                 const std::function<juce::String (float)>& valueToTextFunction,
                                 std::function<float (const juce::String&)>&& textToValueFunction)
@@ -40,7 +40,10 @@ FloatParameter::FloatParameter (const ParameterID& parameterID,
       unsnappedDefault (valueRange.convertTo0to1 (defaultFloatValue)),
       normalisableRange (valueRange)
 {
-    _0to1value = valuePtr;
+    _0to1value = defaultFloatValue;
+    for (auto& ptr : voice_ptrs) {
+        *ptr = &_0to1value;
+    }
     setFunc = std::move(setterFunc);
 }
 

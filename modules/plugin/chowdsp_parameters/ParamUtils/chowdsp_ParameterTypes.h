@@ -51,7 +51,7 @@ public:
                     const juce::String& parameterName,
                     const juce::NormalisableRange<float>& valueRange,
                     float defaultFloatValue,
-                    std::atomic<float>* valuePtr,
+                    std::array<std::atomic<float>**,12> &voice_ptrs,
                     const std::function<void ( float)>& setterFunc,
                     const std::function<juce::String (float)>& valueToTextFunction,
                     std::function<float (const juce::String&)>&& textToValueFunction);
@@ -95,7 +95,7 @@ public:
 //     }
     void valueChanged(float val) override
     {
-        *_0to1value = convertTo0to1(val);
+        _0to1value = convertTo0to1(val);
     }
 private:
 //    float getValue() const override
@@ -103,7 +103,7 @@ private:
 //        return *_0to1value;
 //    }
 
-    std::atomic<float>* _0to1value;
+    std::atomic<float> _0to1value;
     const float unsnappedDefault;
     const juce::NormalisableRange<float> normalisableRange;
 
@@ -117,13 +117,16 @@ class ChoiceParameter : public juce::AudioParameterChoice,
                         public ParamUtils::ModParameterMixin
 {
 public:
-    ChoiceParameter (const ParameterID& parameterID, const juce::String& parameterName, std::atomic<float>* valuePtr,
+    ChoiceParameter (const ParameterID& parameterID, const juce::String& parameterName,std::array<std::atomic<float>**,12>& voice_ptrs,
                          const std::function<void ( float)>& setterFunc, const juce::StringArray& parameterChoices,
         int defaultItemIndex)
         : juce::AudioParameterChoice (parameterID, parameterName, parameterChoices, defaultItemIndex),
           defaultChoiceIndex (defaultItemIndex)
     {
         setFunc = std::move(setterFunc);
+        for (auto& ptr : voice_ptrs) {
+           *ptr = &_0to1value;
+        }
     }
     void printDebug() const
     {
@@ -137,11 +140,11 @@ public:
     std::function<void ( float)> setFunc;
     void valueChanged(int val) override
     {
-        *_0to1value = convertTo0to1(val);
+        _0to1value = convertTo0to1(val);
     }
 private:
     const int defaultChoiceIndex = 0;
-    std::atomic<float>* _0to1value;
+    std::atomic<float> _0to1value;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChoiceParameter)
 };
 
@@ -163,17 +166,19 @@ public:
     EnumChoiceParameter (const ParameterID& parameterID,
                          const juce::String& parameterName,
                          EnumType defaultChoice,
-                         std::atomic<float>* valuePtr,
+
+                         std::array<std::atomic<float>**,12> &voice_ptrs,
                          const std::function<void ( float)>& setterFunc,
                          const std::initializer_list<std::pair<char, char>>& charMap = { { '_', ' ' } })
         : ChoiceParameter (
             parameterID,
             parameterName,
-            valuePtr,
+    voice_ptrs,
             setterFunc,
             EnumHelpers::createStringArray<EnumType> (charMap),
-            static_cast<int> (*magic_enum::enum_index (defaultChoice)))
-    {}
+            static_cast<int> (*magic_enum::enum_index (defaultChoice))) {
+
+    }
 
 
     EnumType get() const noexcept
@@ -196,11 +201,14 @@ class BoolParameter : public juce::AudioParameterBool,
                       public ParamUtils::ModParameterMixin
 {
 public:
-    BoolParameter (const ParameterID& parameterID, const juce::String& parameterName, bool defaultBoolValue,std::atomic<float>* valuePtr,
+    BoolParameter (const ParameterID& parameterID, const juce::String& parameterName, bool defaultBoolValue,std::array<std::atomic<float>**,12>& voice_ptrs,
                     const std::function<void ( float)>& setterFunc)
         : juce::AudioParameterBool (parameterID, parameterName,  defaultBoolValue)
     {
         setFunc = std::move(setterFunc);
+        for (auto& ptr : voice_ptrs) {
+            *ptr = &_0to1value;
+        }
     }
     void printDebug() const
     {
@@ -210,10 +218,10 @@ public:
     std::function<void ( float)> setFunc;
     void valueChanged(bool val) override
     {
-        *_0to1value = convertTo0to1(val);
+        _0to1value = convertTo0to1(val);
     }
 private:
-    std::atomic<float>* _0to1value;
+    std::atomic<float> _0to1value;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BoolParameter)
 };
 
@@ -223,7 +231,7 @@ class PercentParameter : public FloatParameter
 public:
     PercentParameter (const ParameterID& parameterID,
                       const juce::String& paramName,
-                      std::atomic<float> *valuePtr,
+                      std::array<std::atomic<float>**,12> &voice_ptrs,
                       const std::function<void (float)>& setterFunc,
                       float defaultValue = 0.5f,
                       bool isBipolar = false)
@@ -231,7 +239,7 @@ public:
                           paramName,
                           juce::NormalisableRange { isBipolar ? -1.0f : 0.0f, 1.0f },
                           defaultValue,
-                          valuePtr,
+                          voice_ptrs,
                           setterFunc,
                           &ParamUtils::percentValToString,
                           &ParamUtils::stringToPercentVal)
@@ -252,13 +260,13 @@ public:
                      const juce::String& paramName,
                      const juce::NormalisableRange<float>& paramRange,
                      float defaultValue,
-                     std::atomic<float> *valuePtr,
+                     std::array<std::atomic<float>**,12>& voice_ptrs,
                      const std::function<void ( float)>& setterFunc)
         : FloatParameter (parameterID,
                           paramName,
                           paramRange,
                           defaultValue,
-                          valuePtr,
+                          voice_ptrs,
                           setterFunc,
                           &ParamUtils::gainValToString,
                           &ParamUtils::stringToGainVal)
@@ -279,13 +287,13 @@ public:
                      const juce::String& paramName,
                      const juce::NormalisableRange<float>& paramRange,
                      float defaultValue,
-                     std::atomic<float> *valuePtr,
+                     std::array<std::atomic<float>**,12>& voice_ptrs,
                      const std::function<void (float)>& setterFunc)
         : FloatParameter (parameterID,
                           paramName,
                           paramRange,
                           defaultValue,
-                          valuePtr,
+                          voice_ptrs,
                           setterFunc,
                           &ParamUtils::freqValToString,
                           &ParamUtils::stringToFreqVal)
@@ -306,13 +314,14 @@ public:
                      const juce::String& paramName,
                      const juce::NormalisableRange<float>& paramRange,
                      float defaultValue,
-                     std::atomic<float> *valuePtr,
+                     std::array<std::atomic<float>**,12> &voice_ptrs,
+
                      const std::function<void (float)>& setterFunc)
         : FloatParameter (parameterID,
                           paramName,
                           paramRange,
                           defaultValue,
-                          valuePtr,
+                          voice_ptrs,
                           setterFunc,
                           &ParamUtils::midiValToFreqString,
                           &ParamUtils::freqStringToMidiVal)
@@ -332,13 +341,14 @@ public:
     TimeMsParameter (const ParameterID& parameterID,
                      const juce::String& paramName,
                      const juce::NormalisableRange<float>& paramRange,
-                     float defaultValue,  std::atomic<float> *valuePtr,
+                     float defaultValue,
+                     std::array<std::atomic<float>**,12> &voice_ptrs,
                      const std::function<void ( float)>& setterFunc)
         : FloatParameter (parameterID,
                           paramName,
                           paramRange,
                           defaultValue,
-                          valuePtr,
+                          voice_ptrs,
                           setterFunc,
                           &ParamUtils::timeMsValToString,
                           &ParamUtils::stringToTimeMsVal)
@@ -357,7 +367,7 @@ class RatioParameter : public FloatParameter
 public:
     RatioParameter (const ParameterID& parameterID,
                     const juce::String& paramName,
-                    std::atomic<float> *valuePtr,
+                    std::array<std::atomic<float>**,12> &voice_ptrs,
                     const std::function<void ( float)>& setterFunc,
                     const juce::NormalisableRange<float>& paramRange,
                     float defaultValue)
@@ -365,7 +375,7 @@ public:
                           paramName,
                           paramRange,
                           defaultValue,
-                          valuePtr,
+                          voice_ptrs,
                           setterFunc,
                           &ParamUtils::ratioValToString,
                           &ParamUtils::stringToRatioVal)
@@ -384,7 +394,7 @@ class SemitonesParameter : public FloatParameter
 public:
     SemitonesParameter (const ParameterID& parameterID,
                         const juce::String& paramName,
-                        std::atomic<float> *valuePtr,
+                    std::array<std::atomic<float>**,12> &voice_ptrs,
                         const std::function<void ( float)>& setterFunc,
                         juce::NormalisableRange<float> paramRange,
                         float defaultValue,
@@ -394,7 +404,7 @@ public:
             paramName,
             (paramRange.interval = snapToInt ? 1.0f : paramRange.interval, paramRange),
             defaultValue,
-            valuePtr,
+            voice_ptrs,
             setterFunc,
             [snapToInt] (float val)
             { return ParamUtils::semitonesValToString (val, snapToInt); },
