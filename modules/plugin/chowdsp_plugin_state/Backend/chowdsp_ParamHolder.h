@@ -113,6 +113,9 @@ public:
     {
         return &boolParams;
     }
+    std::vector<OptionalPointer<ChoiceParameter>>* getChoiceParams() {
+        return &choiceParams;
+    }
     std::vector<ParamHolder*>* getParamHolders()
     {
         return &otherParams;
