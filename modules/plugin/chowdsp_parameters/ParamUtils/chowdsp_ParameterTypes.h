@@ -57,6 +57,15 @@ public:
                     std::function<float (const juce::String&)>&& textToValueFunction);
 
     using Ptr = OptionalPointer<FloatParameter>;
+    /**
+     * Sets the parameter value.
+     * This will result in a call @c setValueNotifyingHost, so make sure that's what you want.
+     * Especially if calling this from the audio thread!
+     */
+    void setParameterValue (float newValue) {
+        AudioParameterFloat::operator= (newValue);
+        setFunc(_0to1value);
+    }
 
     /** Returns the default value for the parameter. */
     float getDefaultValue() const override { return unsnappedDefault; }
