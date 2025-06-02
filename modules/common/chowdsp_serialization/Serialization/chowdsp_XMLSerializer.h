@@ -83,6 +83,11 @@ public:
         parent->setAttribute ("point_y",juce::String(point.getY()));
 
     }
+    static void addChildElement (SerializedType& parent, juce::String element,int index) {
+        parent->setAttribute (element, juce::String(index));
+    }
+
+
     static void addChildElement (SerializedType& parent, juce::String element, juce::String f) // NOSONAR
     {
         parent->setAttribute (element, f);

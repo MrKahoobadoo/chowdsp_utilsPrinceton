@@ -63,6 +63,7 @@ namespace ParameterTypeHelpers
         Serializer::addChildElement (serial, param.paramID,getValue (param));
     }
 
+
     template <typename ParamType>
     void setValue (ParameterElementType<ParamType> val, ParamType& param)
     {
@@ -70,8 +71,7 @@ namespace ParameterTypeHelpers
     }
 
     template <typename Serializer, typename ParamType>
-    std::enable_if_t<std::is_same_v<Serializer, XMLSerializer>, void>
-    deserializeParameter (const typename Serializer::SerializedType& serial, ParamType& param)
+    void deserializeParameter (const typename Serializer::SerializedType& serial, ParamType& param)
     {
         ParameterElementType<ParamType> val;
         Serialization::deserialize<Serializer> (serial,param.paramID, val);
@@ -86,11 +86,11 @@ namespace ParameterTypeHelpers
         setValue (val, param);
     }
     template <typename Serializer, typename ParamType>
-    std::enable_if_t<std::is_same_v<Serializer, XMLSerializer>, void>
-    deserializeParameter (const typename Serializer::DeserializedType& serial, ParamType& param)
+
+    void deserializeParameter (const typename Serializer::DeserializedType& deserial, ParamType& param)
     {
         ParameterElementType<ParamType> val;
-        Serialization::deserialize<Serializer> (serial,param.paramID, val);
+        Serialization::deserialize<Serializer> (deserial,param.paramID, val);
 //        if constexpr (std::is_same_v<ParameterElementType<ParamType>,bool>)
 //        {
 //            DBG("paramid" + param.paramID + "val " + juce::String(static_cast<int>(val)));
