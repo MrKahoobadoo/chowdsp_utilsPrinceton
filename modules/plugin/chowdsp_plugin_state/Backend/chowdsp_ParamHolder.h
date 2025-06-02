@@ -1,9 +1,20 @@
 #pragma once
-
+namespace bitklavier {
+    class StateChangeableParameter {
+    public:
+        virtual ~StateChangeableParameter() = default;
+        virtual void processStateChanges(){}
+        bitklavier::ParameterChangeBuffer stateChanges;
+        void push_change(std::pair<int,juce::ValueTree> && x)
+        {
+            stateChanges.changeState.push_back(x);
+        }
+    };
+}
 namespace chowdsp
 {
 /** A base class for storing parameters that can go into a plugin state. */
-class ParamHolder
+class ParamHolder : public bitklavier::StateChangeableParameter
 {
 public:
     /** Convenient alias for a Parameter ID */
@@ -121,12 +132,7 @@ public:
         return &otherParams;
     }
 
-    virtual void processStateChanges(){}
-    bitklavier::ParameterChangeBuffer stateChanges;
-    void push_change(std::pair<int,juce::ValueTree> && x)
-    {
-        stateChanges.changeState.push_back(x);
-    }
+
 private:
     void add() const
     {
