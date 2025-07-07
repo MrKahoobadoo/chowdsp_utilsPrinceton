@@ -40,7 +40,7 @@ FloatParameter::FloatParameter (const ParameterID& parameterID,
       unsnappedDefault (valueRange.convertTo0to1 (defaultFloatValue)),
       normalisableRange (valueRange)
 {
-    _0to1value = defaultFloatValue;
+    _0to1value = convertTo0to1(defaultFloatValue);
     for (auto& ptr : voice_ptrs) {
         *ptr = &_0to1value;
     }
