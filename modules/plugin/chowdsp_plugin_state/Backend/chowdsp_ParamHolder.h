@@ -1,4 +1,6 @@
 #pragma once
+#include "Identifiers.h"
+
 namespace bitklavier {
     class StateChangeableParameter {
     public:
@@ -9,6 +11,7 @@ namespace bitklavier {
         {
             stateChanges.changeState.push_back(x);
         }
+        juce::ValueTree paramDefault{IDs::PARAM_DEFAULT};
     };
 }
 namespace chowdsp

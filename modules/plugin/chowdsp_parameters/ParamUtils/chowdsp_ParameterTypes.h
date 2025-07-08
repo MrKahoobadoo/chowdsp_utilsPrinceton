@@ -11,6 +11,7 @@ namespace bitklavier {
         }
 
         std::vector<std::pair<int,juce::ValueTree>> changeState = {};
+        juce::ValueTree defaultState;
     };
 }
 namespace chowdsp
