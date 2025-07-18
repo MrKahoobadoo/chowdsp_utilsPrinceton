@@ -14,7 +14,7 @@ public:
      * or make it "non-owning" so it doesn't take ownership of the parameter
      * pointers.
      */
-    explicit ParamHolder (const juce::String& name = {}, bool isOwning = true);
+    explicit ParamHolder (juce::TimeSliceThread & m,const juce::String& name = {}, bool isOwning = true);
 
     ParamHolder (ParamHolder&&) noexcept = default;
     ParamHolder& operator= (ParamHolder&&) noexcept = default;
@@ -91,6 +91,7 @@ public:
     /** Assign this function to apply version streaming to your non-parameter state. */
     std::function<void (const Version&)> versionStreamingCallback = nullptr;
 
+    juce::TimeSliceThread &time_slice_thread_;
 private:
     void add() const
     {
@@ -104,7 +105,6 @@ private:
 
     using ParamPtrVariant = std::variant<FloatParameter*, ChoiceParameter*, BoolParameter*>;
     std::unordered_map<std::string, ParamPtrVariant> allParamsMap {};
-
     juce::String name;
     bool isOwning;
 

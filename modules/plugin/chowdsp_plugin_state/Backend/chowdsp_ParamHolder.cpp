@@ -1,8 +1,9 @@
 namespace chowdsp
 {
-inline ParamHolder::ParamHolder (const juce::String& phName, bool phIsOwning)
+inline ParamHolder::ParamHolder (juce::TimeSliceThread & m,const juce::String& phName, bool phIsOwning)
     : name (phName),
-      isOwning (phIsOwning)
+      isOwning (phIsOwning),
+    time_slice_thread_(m)
 {
     juce::ignoreUnused (isOwning);
 }

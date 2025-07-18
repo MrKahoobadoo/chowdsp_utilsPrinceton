@@ -17,8 +17,8 @@ ParameterListeners::ParameterListeners (ParamHolder& parameters,
             if (parentProcessor != nullptr)
                 rangedParam->addListener (this);
         });
-
-    startTimer (interval);
+    this->interval = interval;
+    parameters.time_slice_thread_.addTimeSliceClient(this);
 }
 
 ParameterListeners::~ParameterListeners()
@@ -40,15 +40,22 @@ void ParameterListeners::parameterValueChanged (int paramIndex, float newValue)
     callMessageThreadBroadcaster (index);
 }
 
-void ParameterListeners::timerCallback()
-{
+// void ParameterListeners::timerCallback()
+// {
+//     // If the parameters are attached to a processor then most of the listeners
+//     // callbacks will be handled there. The point of this timer is to handle
+//     // parameter changes that might have come from the audio thread, or for
+//     // parameters that may not be connected to a processor.
+//     updateBroadcastersFromMessageThread();
+// }
+int ParameterListeners::useTimeSlice() {
     // If the parameters are attached to a processor then most of the listeners
     // callbacks will be handled there. The point of this timer is to handle
     // parameter changes that might have come from the audio thread, or for
     // parameters that may not be connected to a processor.
     updateBroadcastersFromMessageThread();
+    return interval;
 }
-
 void ParameterListeners::updateBroadcastersFromMessageThread()
 {
     jassert (juce::MessageManager::existsAndIsCurrentThread());

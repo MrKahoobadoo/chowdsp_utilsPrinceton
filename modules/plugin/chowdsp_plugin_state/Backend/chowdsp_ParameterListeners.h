@@ -28,7 +28,7 @@ enum class ParameterListenerThread
 };
 
 /** Utility class to manage a set of parameter listeners. */
-class ParameterListeners : private juce::Timer,
+class ParameterListeners : public juce::TimeSliceClient,
                            private juce::AudioProcessorParameter::Listener
 {
 public:
@@ -75,7 +75,8 @@ private:
     void callMessageThreadBroadcaster (size_t index);
     void callAudioThreadBroadcaster (size_t index);
 
-    void timerCallback() override;
+    // void timerCallback() override;
+    int useTimeSlice() override;
     void parameterValueChanged (int, float) override;
     void parameterGestureChanged (int, bool) override {}
 
@@ -89,7 +90,7 @@ private:
     std::vector<ParamInfo> paramInfoList { totalNumParams };
 
     std::vector<Broadcaster<void()>> messageThreadBroadcasters { totalNumParams };
-
+    int interval;
     static constexpr size_t actionSize = 16; // sizeof ([this, i = index] { callMessageThreadBroadcaster (i); })
     std::vector<Broadcaster<void()>> audioThreadBroadcasters { totalNumParams };
     using AudioThreadAction = juce::dsp::FixedSizeFunction<actionSize, void()>;
