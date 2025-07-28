@@ -3,6 +3,7 @@
 #if JUCE_MODULE_AVAILABLE_chowdsp_clap_extensions
 #include <chowdsp_clap_extensions/chowdsp_clap_extensions.h>
 #endif
+#include "Identifiers.h"
 namespace bitklavier {
     struct ParameterChangeBuffer {
         ParameterChangeBuffer()
@@ -11,7 +12,7 @@ namespace bitklavier {
         }
 
         std::vector<std::pair<int,juce::ValueTree>> changeState = {};
-        juce::ValueTree defaultState;
+        juce::ValueTree defaultState{IDs::PARAM_DEFAULT};
     };
 }
 namespace chowdsp
