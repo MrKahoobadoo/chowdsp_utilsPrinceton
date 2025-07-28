@@ -95,7 +95,7 @@ public:
     {
         DBG(paramID + " : " + juce::String(get()));
     }
-
+    float getModAmt()const {return modulationAmount;}
     bitklavier::ParameterChangeBuffer stateChanges;
 private:
     const float unsnappedDefault;
