@@ -12,7 +12,7 @@ namespace bitklavier {
         }
 
         std::vector<std::pair<int,juce::ValueTree>> changeState = {};
-        juce::ValueTree defaultState{IDs::PARAM_DEFAULT};
+        juce::ValueTree defaultState;
     };
 }
 namespace chowdsp
@@ -96,7 +96,7 @@ public:
     {
         DBG(paramID + " : " + juce::String(get()));
     }
-    float getModAmt()const {return modulationAmount;}
+    float getModAmt()const {return convertFrom0to1(modulationAmount);}
     bitklavier::ParameterChangeBuffer stateChanges;
 private:
     const float unsnappedDefault;
