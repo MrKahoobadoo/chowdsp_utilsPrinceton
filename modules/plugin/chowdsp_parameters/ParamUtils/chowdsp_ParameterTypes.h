@@ -98,7 +98,12 @@ public:
     }
     float getModAmt()const {return convertFrom0to1(modulationAmount);}
     bitklavier::ParameterChangeBuffer stateChanges;
+    std::function<juce::String (float)> getStringFromValueFunction() const {
+        return myStringFromValFunction;
+    }
 private:
+
+     std::function<juce::String (float)> myStringFromValFunction;
     const float unsnappedDefault;
     const juce::NormalisableRange<float> normalisableRange;
 

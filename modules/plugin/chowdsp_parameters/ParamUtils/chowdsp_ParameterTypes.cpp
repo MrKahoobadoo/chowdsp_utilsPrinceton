@@ -37,6 +37,7 @@ FloatParameter::FloatParameter (const ParameterID& parameterID,
       normalisableRange (valueRange),
       supportsModulation(supportsModulation)
 {
+    myStringFromValFunction = valueToTextFunction;
 }
 
 void FloatParameter::applyMonophonicModulation (double modulationValue)
