@@ -34,6 +34,8 @@ public:
 
     /** Returns the attached parameter */
     [[nodiscard]] const FloatParameter* getParameter() const { return attachment.param; }
+    /** Returns the attached parameter */
+    [[nodiscard]]  void setNormalisableRange(juce::NormalisableRange<float> newRange) const  { attachment.param->range = newRange; }
 
 private:
     void sliderValueChanged (juce::Slider*) override;

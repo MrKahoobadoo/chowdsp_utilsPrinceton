@@ -86,6 +86,7 @@ void SliderAttachment::setValue (float newValue)
         juce::ScopedValueSetter svs { skipSliderChangedCallback, true };
         slider->setValue (newValue, juce::sendNotificationSync);
     }
+
 }
 
 void SliderAttachment::sliderValueChanged (juce::Slider*)
@@ -94,6 +95,7 @@ void SliderAttachment::sliderValueChanged (juce::Slider*)
         return;
 
     attachment.setValueAsPartOfGesture ((float) slider->getValue());
+
 }
 
 void SliderAttachment::sliderDragStarted (juce::Slider*)
