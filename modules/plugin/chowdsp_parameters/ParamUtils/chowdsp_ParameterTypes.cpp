@@ -34,7 +34,7 @@ FloatParameter::FloatParameter (const ParameterID& parameterID,
             .withValueFromStringFunction (std::move (textToValueFunction))),
 #endif
       unsnappedDefault (valueRange.convertTo0to1 (defaultFloatValue)),
-      normalisableRange (valueRange),
+//      normalisableRange (valueRange),
       supportsModulation(supportsModulation)
 {
     myStringFromValFunction = valueToTextFunction;
@@ -47,6 +47,6 @@ void FloatParameter::applyMonophonicModulation (double modulationValue)
 
 float FloatParameter::getCurrentValue() const noexcept
 {
-    return normalisableRange.convertFrom0to1 (juce::jlimit (0.0f, 1.0f, normalisableRange.convertTo0to1 (get()) + modulationAmount));
+    return range.convertFrom0to1 (juce::jlimit (0.0f, 1.0f, range.convertTo0to1 (get()) + modulationAmount));
 }
 } // namespace chowdsp

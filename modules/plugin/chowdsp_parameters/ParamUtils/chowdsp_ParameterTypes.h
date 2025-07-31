@@ -105,7 +105,7 @@ private:
 
      std::function<juce::String (float)> myStringFromValFunction;
     const float unsnappedDefault;
-    const juce::NormalisableRange<float> normalisableRange;
+//    const juce::NormalisableRange<float> normalisableRange;
 
     const bool supportsModulation;
     float modulationAmount = 0.0f;
