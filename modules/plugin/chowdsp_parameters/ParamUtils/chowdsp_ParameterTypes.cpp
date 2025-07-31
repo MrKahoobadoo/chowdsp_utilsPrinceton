@@ -39,14 +39,17 @@ FloatParameter::FloatParameter (const ParameterID& parameterID,
 {
     myStringFromValFunction = valueToTextFunction;
 }
-
+//TODO : update modulation to look at / store entire buffer coming from processblock
+//could implement as float* or AudioBuffer&/*
 void FloatParameter::applyMonophonicModulation (double modulationValue)
 {
     modulationAmount = (float) modulationValue;
 }
-
+//TODO : update getCurrentValue to take index of currentsample when accessing parameter.
+// this would index into a modulationAmount array or AudioBuffer
 float FloatParameter::getCurrentValue() const noexcept
 {
     return range.convertFrom0to1 (juce::jlimit (0.0f, 1.0f, range.convertTo0to1 (get()) + modulationAmount));
 }
+
 } // namespace chowdsp

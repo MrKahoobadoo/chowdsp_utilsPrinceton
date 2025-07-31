@@ -31,7 +31,7 @@ public:
 
     /** Sets the initial value of the slider */
     void setValue (float newValue);
-
+    ///BREAKING HERE ON MOD DRAG TYPICALLY MEANS THE SLIDER IS MISSING A CALL TO addAttachment()
     /** Returns the attached parameter */
     [[nodiscard]] const FloatParameter* getParameter() const { return attachment.param; }
     /** Returns the attached parameter */
