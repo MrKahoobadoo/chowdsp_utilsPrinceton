@@ -55,6 +55,15 @@ namespace ParamUtils
         return range;
     }
 
+    template <typename T>
+    juce::NormalisableRange<T> createNormalisableRange (T start, T end, T centre, T increment)
+    {
+        auto range = juce::NormalisableRange { start, end, increment };
+        range.setSkewForCentre (centre);
+
+        return range;
+    }
+
     /** Helper method for creating frequency parameters */
     void createFreqParameter (Parameters& params, const ParameterID& id, const juce::String& name, float min, float max, float centre, float defaultValue);
 
