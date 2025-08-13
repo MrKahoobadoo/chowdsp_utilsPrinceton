@@ -65,7 +65,8 @@ public:
                     const juce::NormalisableRange<float>& valueRange,
                     float defaultValue,
                     const std::function<juce::String (float)>& valueToTextFunction,
-                    std::function<float (const juce::String&)>&& textToValueFunction,bool supportsModulation=false);
+                    std::function<float (const juce::String&)>&& textToValueFunction,
+                    bool supportsModulation=false);
 
     using Ptr = OptionalPointer<FloatParameter>;
 
@@ -252,13 +253,15 @@ public:
     GainDBParameter (const ParameterID& parameterID,
                      const juce::String& paramName,
                      const juce::NormalisableRange<float>& paramRange,
-                     float defaultValue, bool mod=false)
+                     float defaultValue,
+                     bool mod=false)
         : FloatParameter (parameterID,
                           paramName,
                           paramRange,
                           defaultValue,
                           &ParamUtils::gainValToString,
-                          &ParamUtils::stringToGainVal, true)
+                          &ParamUtils::stringToGainVal,
+                          true)
     {
     }
 
@@ -298,13 +301,15 @@ public:
     TimeMsParameter (const ParameterID& parameterID,
                      const juce::String& paramName,
                      const juce::NormalisableRange<float>& paramRange,
-                     float defaultValue,bool mod =false)
+                     float defaultValue,
+                     bool mod=false)
         : FloatParameter (parameterID,
                           paramName,
                           paramRange,
                           defaultValue,
                           &ParamUtils::timeMsValToString,
-                          &ParamUtils::stringToTimeMsVal,mod)
+                          &ParamUtils::stringToTimeMsVal,
+                          mod)
     {
     }
 
