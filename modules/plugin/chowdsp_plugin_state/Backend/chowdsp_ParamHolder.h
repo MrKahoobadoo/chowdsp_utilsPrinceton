@@ -134,7 +134,8 @@ public:
         return &otherParams;
     }
 
-
+    using ParamPtrVariant = std::variant<chowdsp::FloatParameter*, chowdsp::ChoiceParameter*, chowdsp::BoolParameter*>;
+    std::vector<ParamPtrVariant> modulatableParams;
 private:
     void add() const
     {
@@ -146,7 +147,7 @@ private:
     std::vector<OptionalPointer<BoolParameter>> boolParams;
     std::vector<ParamHolder*> otherParams;
 
-    using ParamPtrVariant = std::variant<FloatParameter*, ChoiceParameter*, BoolParameter*>;
+    // using ParamPtrVariant = std::variant<FloatParameter*, ChoiceParameter*, BoolParameter*>;
     std::unordered_map<std::string, ParamPtrVariant> allParamsMap {};
 
     juce::String name;
