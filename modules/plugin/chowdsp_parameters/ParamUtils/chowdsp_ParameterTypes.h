@@ -4,6 +4,7 @@
 #include <chowdsp_clap_extensions/chowdsp_clap_extensions.h>
 #endif
 #include "Identifiers.h"
+
 namespace bitklavier {
     struct ParameterChangeBuffer {
         ParameterChangeBuffer()
@@ -13,6 +14,16 @@ namespace bitklavier {
 
         std::vector<std::pair<int,juce::ValueTree>> changeState = {};
         juce::ValueTree defaultState;
+    };
+    class StateChangeableParameter {
+    public:
+        virtual ~StateChangeableParameter() = default;
+        virtual void processStateChanges(){}
+        bitklavier::ParameterChangeBuffer stateChanges;
+        void push_change(std::pair<int,juce::ValueTree> && x)
+        {
+            stateChanges.changeState.push_back(x);
+        }
     };
 }
 namespace chowdsp
@@ -116,7 +127,8 @@ private:
 
 /** Wrapper of juce::AudioParameterChoice that does not support modulation. */
 class ChoiceParameter : public juce::AudioParameterChoice,
-                        public ParamUtils::ModParameterMixin
+                        public ParamUtils::ModParameterMixin,
+                        public bitklavier::StateChangeableParameter
 {
 public:
     ChoiceParameter (const ParameterID& parameterID, const juce::String& parameterName, const juce::StringArray& parameterChoices, int defaultItemIndex)
@@ -141,7 +153,7 @@ public:
      */
     void setParameterValue (int newValue) { AudioParameterChoice::operator= (newValue); }
 
-    bitklavier::ParameterChangeBuffer stateChanges;
+    // bitklavier::ParameterChangeBuffer stateChanges;
 private:
     const int defaultChoiceIndex = 0;
 
@@ -182,6 +194,19 @@ public:
     void printDebug() const
     {
         DBG(paramID + " : " + juce::String(static_cast<int>(get())));
+    }
+    void processStateChanges() override {
+        static juce::var nullVar;
+        for (const auto& [index, change] : stateChanges.changeState) {
+            auto val = change.getProperty(paramID);
+            if (val != nullVar) {
+                int n = val;
+                EnumType t = static_cast<EnumType>(1<<n);
+                setParameterValue(t);
+
+            }
+        }
+        stateChanges.changeState.clear();
     }
 
     /**

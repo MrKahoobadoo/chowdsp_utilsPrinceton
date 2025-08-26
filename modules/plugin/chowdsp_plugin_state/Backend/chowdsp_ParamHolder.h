@@ -1,18 +1,7 @@
 #pragma once
 #include "Identifiers.h"
 
-namespace bitklavier {
-    class StateChangeableParameter {
-    public:
-        virtual ~StateChangeableParameter() = default;
-        virtual void processStateChanges(){}
-        bitklavier::ParameterChangeBuffer stateChanges;
-        void push_change(std::pair<int,juce::ValueTree> && x)
-        {
-            stateChanges.changeState.push_back(x);
-        }
-    };
-}
+
 namespace chowdsp
 {
 /** A base class for storing parameters that can go into a plugin state. */
