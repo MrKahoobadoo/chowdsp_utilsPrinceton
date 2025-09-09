@@ -33,7 +33,7 @@ public:
     void setValue (float newValue);
     ///BREAKING HERE ON MOD DRAG TYPICALLY MEANS THE SLIDER IS MISSING A CALL TO addAttachment()
     /** Returns the attached parameter */
-    [[nodiscard]] const FloatParameter* getParameter() const { return attachment.param; }
+    [[nodiscard]] FloatParameter* getParameter() const { return attachment.param; }
     /** Returns the attached parameter */
     [[nodiscard]]  void setNormalisableRange(juce::NormalisableRange<float> newRange) const  { attachment.param->range = newRange; }
 

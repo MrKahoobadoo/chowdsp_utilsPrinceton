@@ -38,6 +38,7 @@ FloatParameter::FloatParameter (const ParameterID& parameterID,
       supportsModulation(supportsModulation)
 {
     myStringFromValFunction = valueToTextFunction;
+    myValueFromStringFunction = textToValueFunction;
 }
 //TODO : update modulation to look at / store entire buffer coming from processblock
 //could implement as float* or AudioBuffer&/*

@@ -113,9 +113,13 @@ public:
     std::function<juce::String (float)> getStringFromValueFunction() const {
         return myStringFromValFunction;
     }
+    std::function<float (const juce::String&)> getValueFromStringFunction() const {
+        return myValueFromStringFunction;
+    }
 private:
 
      std::function<juce::String (float)> myStringFromValFunction;
+    std::function<float (const juce::String&)> myValueFromStringFunction;
     const float unsnappedDefault;
 //    const juce::NormalisableRange<float> normalisableRange;
 
