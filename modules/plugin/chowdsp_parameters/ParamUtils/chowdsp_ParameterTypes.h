@@ -224,7 +224,8 @@ private:
 
 /** Wrapper of juce::AudioParameterBool that does not support modulation. */
 class BoolParameter : public juce::AudioParameterBool,
-                      public ParamUtils::ModParameterMixin
+                      public ParamUtils::ModParameterMixin,
+    public bitklavier::StateChangeableParameter
 {
 public:
     BoolParameter (const ParameterID& parameterID, const juce::String& parameterName, bool defaultBoolValue)
@@ -243,7 +244,16 @@ public:
      * Especially if calling this from the audio thread!
      */
     void setParameterValue (bool newValue) { AudioParameterBool::operator= (newValue); }
-
+    void processStateChanges() override {
+        static juce::var nullVar;
+        for (const auto& [index, change] : stateChanges.changeState) {
+            auto val = change.getProperty(paramID);
+            if (val != nullVar) {
+                setParameterValue(val);
+            }
+        }
+        stateChanges.changeState.clear();
+    }
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BoolParameter)
 };
