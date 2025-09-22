@@ -77,7 +77,7 @@ public:
                     float defaultValue,
                     const std::function<juce::String (float)>& valueToTextFunction,
                     std::function<float (const juce::String&)>&& textToValueFunction,
-                    bool supportsModulation=false);
+                    bool supportsModulation=false, const juce::ValueTree& v={});
 
     using Ptr = OptionalPointer<FloatParameter>;
 
@@ -116,6 +116,7 @@ public:
     std::function<float (const juce::String&)> getValueFromStringFunction() const {
         return myValueFromStringFunction;
     }
+    juce::ValueTree modulatable_param;
 private:
 
      std::function<juce::String (float)> myStringFromValFunction;
@@ -158,6 +159,8 @@ public:
     void setParameterValue (int newValue) { AudioParameterChoice::operator= (newValue); }
 
     // bitklavier::ParameterChangeBuffer stateChanges;
+    juce::ValueTree modulatable_param;
+
 private:
     const int defaultChoiceIndex = 0;
 
@@ -221,6 +224,8 @@ public:
     void setParameterValue (EnumType newValue) { AudioParameterChoice::operator= (static_cast<int> (*magic_enum::enum_index (newValue))); }
 
     using Ptr = OptionalPointer<EnumChoiceParameter>;
+    juce::ValueTree modulatable_param;
+
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnumChoiceParameter)
@@ -258,6 +263,7 @@ public:
         }
         stateChanges.changeState.clear();
     }
+    juce::ValueTree modulatable_param;
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BoolParameter)
 };
@@ -269,13 +275,13 @@ public:
     PercentParameter (const ParameterID& parameterID,
                       const juce::String& paramName,
                       float defaultValue = 0.5f,
-                      bool isBipolar = false)
+                      bool isBipolar = false,const juce::ValueTree& v={})
         : FloatParameter (parameterID,
                           paramName,
                           juce::NormalisableRange { isBipolar ? -1.0f : 0.0f, 1.0f },
                           defaultValue,
                           &ParamUtils::percentValToString,
-                          &ParamUtils::stringToPercentVal)
+                          &ParamUtils::stringToPercentVal,true,v)
     {
     }
 
@@ -293,14 +299,15 @@ public:
                      const juce::String& paramName,
                      const juce::NormalisableRange<float>& paramRange,
                      float defaultValue,
-                     bool mod=false)
+                     bool mod=false,
+                     const juce::ValueTree& v={})
         : FloatParameter (parameterID,
                           paramName,
                           paramRange,
                           defaultValue,
                           &ParamUtils::gainValToString,
                           &ParamUtils::stringToGainVal,
-                          true)
+                          true,v)
     {
     }
 
@@ -317,13 +324,13 @@ public:
     FreqHzParameter (const ParameterID& parameterID,
                      const juce::String& paramName,
                      const juce::NormalisableRange<float>& paramRange,
-                     float defaultValue)
+                     float defaultValue,const juce::ValueTree& v={})
         : FloatParameter (parameterID,
                           paramName,
                           paramRange,
                           defaultValue,
                           &ParamUtils::freqValToString,
-                          &ParamUtils::stringToFreqVal)
+                          &ParamUtils::stringToFreqVal,true,v)
     {
     }
 
@@ -341,14 +348,14 @@ public:
                      const juce::String& paramName,
                      const juce::NormalisableRange<float>& paramRange,
                      float defaultValue,
-                     bool mod=false)
+                     bool mod=false,const juce::ValueTree& v={})
         : FloatParameter (parameterID,
                           paramName,
                           paramRange,
                           defaultValue,
                           &ParamUtils::timeMsValToString,
                           &ParamUtils::stringToTimeMsVal,
-                          mod)
+                          mod,v)
     {
     }
 
@@ -365,13 +372,13 @@ public:
     RatioParameter (const ParameterID& parameterID,
                     const juce::String& paramName,
                     const juce::NormalisableRange<float>& paramRange,
-                    float defaultValue)
+                    float defaultValue,const juce::ValueTree& v={})
         : FloatParameter (parameterID,
                           paramName,
                           paramRange,
                           defaultValue,
                           &ParamUtils::ratioValToString,
-                          &ParamUtils::stringToRatioVal)
+                          &ParamUtils::stringToRatioVal,false,v)
     {
     }
 
@@ -391,7 +398,7 @@ public:
                         const juce::String& paramName,
                         juce::NormalisableRange<float> paramRange,
                         float defaultValue,
-                        bool snapToInt = false)
+                        bool snapToInt = false,const juce::ValueTree& v={})
         : FloatParameter (
             parameterID,
             paramName,
@@ -399,7 +406,7 @@ public:
             defaultValue,
             [snapToInt] (float val)
             { return ParamUtils::semitonesValToString (val, snapToInt); },
-            &ParamUtils::stringToSemitonesVal)
+            &ParamUtils::stringToSemitonesVal,false,v)
     {
     }
     JUCE_END_IGNORE_WARNINGS_GCC_LIKE

@@ -7,7 +7,7 @@ FloatParameter::FloatParameter (const ParameterID& parameterID,
                                 const juce::NormalisableRange<float>& valueRange,
                                 float defaultFloatValue,
                                 const std::function<juce::String (float)>& valueToTextFunction,
-                                std::function<float (const juce::String&)>&& textToValueFunction, bool supportsModulation)
+                                std::function<float (const juce::String&)>&& textToValueFunction, bool supportsModulation, const juce::ValueTree& v)
 #if JUCE_VERSION < 0x070000
     : juce::AudioParameterFloat (
         parameterID,
@@ -35,10 +35,11 @@ FloatParameter::FloatParameter (const ParameterID& parameterID,
 #endif
       unsnappedDefault (valueRange.convertTo0to1 (defaultFloatValue)),
 //      normalisableRange (valueRange),
-      supportsModulation(supportsModulation)
+      supportsModulation(supportsModulation),modulatable_param(v)
 {
     myStringFromValFunction = valueToTextFunction;
     myValueFromStringFunction = textToValueFunction;
+
 }
 //TODO : update modulation to look at / store entire buffer coming from processblock
 //could implement as float* or AudioBuffer&/*
