@@ -102,7 +102,7 @@ public:
 
     /** Returns the current parameter value accounting for any modulation that is currently applied. */
     operator float() const noexcept { return getCurrentValue(); } // NOSONAR, NOLINT(google-explicit-constructor): we want to be able to do implicit conversion here
-
+    operator int() const noexcept {return std::round(getCurrentValue());}
     /** Print debug info. */
     void printDebug() const
     {
@@ -129,7 +129,29 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FloatParameter)
 };
+    /** A float parameter which specifically stores a percentage value. */
+    class IntParameter : public FloatParameter
+    {
+    public:
+        IntParameter (const ParameterID& parameterID,
+                          const juce::String& paramName,
+                          float defaultValue = 0.5f,
+                          bool isBipolar = false,const juce::ValueTree& v={})
+            : FloatParameter (parameterID,
+                              paramName,
+                              juce::NormalisableRange { isBipolar ? -1.0f : 0.0f, 1.0f },
+                              defaultValue,
+                              &ParamUtils::percentValToString,
+                              &ParamUtils::stringToPercentVal,true,v)
+        {
+        }
 
+        using Ptr = OptionalPointer<IntParameter>;
+
+    private:
+
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (IntParameter)
+    };
 /** Wrapper of juce::AudioParameterChoice that does not support modulation. */
 class ChoiceParameter : public juce::AudioParameterChoice,
                         public ParamUtils::ModParameterMixin,
