@@ -117,9 +117,19 @@ public:
     std::function<float (const juce::String&)> getValueFromStringFunction() const {
         return myValueFromStringFunction;
     }
-    juce::ValueTree modulatable_param;
-private:
 
+    void setRangeToValueTree(const juce::ValueTree& vt) {
+        modulatable_param = vt;
+        float start = static_cast<float>(vt.getProperty(IDs::start));
+        float end   = static_cast<float>(vt.getProperty(IDs::end));
+        float skew  = static_cast<float>(vt.getProperty(IDs::skew));
+        range = juce::NormalisableRange<float>{start,end,range.interval, skew};
+    }
+    juce::ValueTree& getModParam() {
+        return modulatable_param;
+    }
+private:
+    juce::ValueTree modulatable_param;
      std::function<juce::String (float)> myStringFromValFunction;
     std::function<float (const juce::String&)> myValueFromStringFunction;
     const float unsnappedDefault;
@@ -160,9 +170,14 @@ public:
     void setParameterValue (int newValue) { AudioParameterChoice::operator= (newValue); }
 
     // bitklavier::ParameterChangeBuffer stateChanges;
+    void setRangeToValueTree(const juce::ValueTree& vt){}
+    juce::ValueTree& getModParam()
+    {
+    return modulatable_param;
+    }
+private:
     juce::ValueTree modulatable_param;
 
-private:
     const int defaultChoiceIndex = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChoiceParameter)
@@ -225,7 +240,7 @@ public:
     void setParameterValue (EnumType newValue) { AudioParameterChoice::operator= (static_cast<int> (*magic_enum::enum_index (newValue))); }
 
     using Ptr = OptionalPointer<EnumChoiceParameter>;
-    juce::ValueTree modulatable_param;
+
 
 
 private:
@@ -264,8 +279,12 @@ public:
         }
         stateChanges.changeState.clear();
     }
-    juce::ValueTree modulatable_param;
+    void setRangeToValueTree(const juce::ValueTree& vt){}
+    juce::ValueTree& getModParam() {
+        return modulatable_param;
+    }
 private:
+    juce::ValueTree modulatable_param;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BoolParameter)
 };
 
