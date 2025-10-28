@@ -119,6 +119,7 @@ public:
     }
 
     void setRangeToValueTree(const juce::ValueTree& vt) {
+        jassert(vt.isValid());
         modulatable_param = vt;
         float start = static_cast<float>(vt.getProperty(IDs::start));
         float end   = static_cast<float>(vt.getProperty(IDs::end));
@@ -172,7 +173,7 @@ public:
     // bitklavier::ParameterChangeBuffer stateChanges;
     void setRangeToValueTree(const juce::ValueTree& vt){}
     juce::ValueTree& getModParam()
-    {
+   {
     return modulatable_param;
     }
 private:
