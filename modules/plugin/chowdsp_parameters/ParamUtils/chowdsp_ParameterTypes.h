@@ -129,7 +129,14 @@ public:
     juce::ValueTree& getModParam() {
         return modulatable_param;
     }
+    void setParamOffsetIndex(int val) {
+        param_offset_index = val;
+    }
+    int getParamOffsetIndex() {
+        return param_offset_index;
+    }
 private:
+    int param_offset_index = -1;
     juce::ValueTree modulatable_param;
      std::function<juce::String (float)> myStringFromValFunction;
     std::function<float (const juce::String&)> myValueFromStringFunction;
@@ -175,8 +182,16 @@ public:
     juce::ValueTree& getModParam()
    {
     return modulatable_param;
+
+    }
+    void setParamOffsetIndex(int val) {
+        param_offset_index = val;
+    }
+    int getParamOffsetIndex() {
+        return param_offset_index;
     }
 private:
+    int param_offset_index = -1;
     juce::ValueTree modulatable_param;
 
     const int defaultChoiceIndex = 0;
@@ -284,7 +299,14 @@ public:
     juce::ValueTree& getModParam() {
         return modulatable_param;
     }
+   void setParamOffsetIndex(int val) {
+        param_offset_index = val;
+    }
+    int getParamOffsetIndex() {
+        return param_offset_index;
+    }
 private:
+    int param_offset_index = -1;
     juce::ValueTree modulatable_param;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BoolParameter)
 };
