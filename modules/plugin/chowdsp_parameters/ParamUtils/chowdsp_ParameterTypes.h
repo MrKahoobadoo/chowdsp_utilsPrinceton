@@ -190,6 +190,7 @@ public:
     int getParamOffsetIndex() {
         return param_offset_index;
     }
+    float getCurrentValue() const noexcept{return 0.f;}
 private:
     int param_offset_index = -1;
     juce::ValueTree modulatable_param;
@@ -305,6 +306,8 @@ public:
     int getParamOffsetIndex() {
         return param_offset_index;
     }
+    float getCurrentValue() const noexcept{return 0.f;}
+
 private:
     int param_offset_index = -1;
     juce::ValueTree modulatable_param;
