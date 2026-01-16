@@ -236,14 +236,13 @@ public:
         DBG(paramID + " : " + juce::String(static_cast<int>(get())));
     }
     void processStateChanges() override {
-        static juce::var nullVar;
         for (const auto& [index, change] : stateChanges.changeState) {
             auto val = change.getProperty(paramID);
-            if (val != nullVar) {
+            if (!val.isUndefined())
+            {
                 int n = val;
                 EnumType t = static_cast<EnumType>(1<<n);
                 setParameterValue(t);
-
             }
         }
         stateChanges.changeState.clear();
