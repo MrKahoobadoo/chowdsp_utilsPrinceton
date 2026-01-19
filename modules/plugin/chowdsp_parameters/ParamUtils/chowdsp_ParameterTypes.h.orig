@@ -5,30 +5,27 @@
 #endif
 #include "Identifiers.h"
 
-namespace bitklavier
-{
-struct ParameterChangeBuffer
-{
-    ParameterChangeBuffer()
-    {
-        changeState.reserve (10);
-    }
+namespace bitklavier {
+    struct ParameterChangeBuffer {
+        ParameterChangeBuffer()
+        {
+            changeState.reserve(10);
+        }
 
-    std::vector<std::pair<int, juce::ValueTree>> changeState = {};
-    juce::ValueTree defaultState;
-};
-class StateChangeableParameter
-{
-public:
-    virtual ~StateChangeableParameter() = default;
-    virtual void processStateChanges() {}
-    bitklavier::ParameterChangeBuffer stateChanges;
-    void push_change (std::pair<int, juce::ValueTree>&& x)
-    {
-        stateChanges.changeState.push_back (x);
-    }
-};
-} // namespace bitklavier
+        std::vector<std::pair<int,juce::ValueTree>> changeState = {};
+        juce::ValueTree defaultState;
+    };
+    class StateChangeableParameter {
+    public:
+        virtual ~StateChangeableParameter() = default;
+        virtual void processStateChanges(){}
+        bitklavier::ParameterChangeBuffer stateChanges;
+        void push_change(std::pair<int,juce::ValueTree> && x)
+        {
+            stateChanges.changeState.push_back(x);
+        }
+    };
+}
 namespace chowdsp
 {
 #if ! JUCE_MODULE_AVAILABLE_chowdsp_clap_extensions
@@ -67,6 +64,8 @@ using ParameterID = juce::ParameterID;
 #endif
 #endif
 
+
+
 /** Wrapper of juce::AudioParameterFloat that supports monophonic modulation. */
 class FloatParameter : public juce::AudioParameterFloat,
                        public ParamUtils::ModParameterMixin
@@ -78,8 +77,7 @@ public:
                     float defaultValue,
                     const std::function<juce::String (float)>& valueToTextFunction,
                     std::function<float (const juce::String&)>&& textToValueFunction,
-                    bool supportsModulation = false,
-                    const juce::ValueTree& v = {});
+                    bool supportsModulation=false, const juce::ValueTree& v={});
 
     using Ptr = OptionalPointer<FloatParameter>;
 
@@ -101,56 +99,49 @@ public:
 
     /** Returns the current parameter value accounting for any modulation that is currently applied. */
     float getCurrentValue() const noexcept;
-    int getIntValue() { return static_cast<int> (*this); }
+    int getIntValue() {return static_cast<int>(*this);}
 
     /** Returns the current parameter value accounting for any modulation that is currently applied. */
     operator float() const noexcept { return getCurrentValue(); } // NOSONAR, NOLINT(google-explicit-constructor): we want to be able to do implicit conversion here
-    explicit operator int() const noexcept { return std::round (getCurrentValue()); }
+    explicit operator int() const noexcept {return std::round(getCurrentValue());}
     /** Print debug info. */
     void printDebug() const
     {
-        DBG (paramID + " : " + juce::String (get()));
+        DBG(paramID + " : " + juce::String(get()));
     }
-    float getModAmt() const { return convertFrom0to1 (modulationAmount); }
+    float getModAmt()const {return convertFrom0to1(modulationAmount);}
     bitklavier::ParameterChangeBuffer stateChanges;
-    std::function<juce::String (float)> getStringFromValueFunction() const
-    {
+    std::function<juce::String (float)> getStringFromValueFunction() const {
         return myStringFromValFunction;
     }
-    std::function<float (const juce::String&)> getValueFromStringFunction() const
-    {
+    std::function<float (const juce::String&)> getValueFromStringFunction() const {
         return myValueFromStringFunction;
     }
 
-    void setRangeToValueTree (const juce::ValueTree& vt)
-    {
-        jassert (vt.isValid());
+    void setRangeToValueTree(const juce::ValueTree& vt) {
+        jassert(vt.isValid());
         modulatable_param = vt;
-        float start = static_cast<float> (vt.getProperty (IDs::start));
-        float end = static_cast<float> (vt.getProperty (IDs::end));
-        float skew = static_cast<float> (vt.getProperty (IDs::skew));
-        range = juce::NormalisableRange<float> { start, end, range.interval, skew };
+        float start = static_cast<float>(vt.getProperty(IDs::start));
+        float end   = static_cast<float>(vt.getProperty(IDs::end));
+        float skew  = static_cast<float>(vt.getProperty(IDs::skew));
+        range = juce::NormalisableRange<float>{start,end,range.interval, skew};
     }
-    juce::ValueTree& getModParam()
-    {
+    juce::ValueTree& getModParam() {
         return modulatable_param;
     }
-    void setParamOffsetIndex (int val)
-    {
+    void setParamOffsetIndex(int val) {
         param_offset_index = val;
     }
-    int getParamOffsetIndex()
-    {
+    int getParamOffsetIndex() {
         return param_offset_index;
     }
-
 private:
     int param_offset_index = -1;
     juce::ValueTree modulatable_param;
-    std::function<juce::String (float)> myStringFromValFunction;
+     std::function<juce::String (float)> myStringFromValFunction;
     std::function<float (const juce::String&)> myValueFromStringFunction;
     const float unsnappedDefault;
-    //    const juce::NormalisableRange<float> normalisableRange;
+//    const juce::NormalisableRange<float> normalisableRange;
 
     const bool supportsModulation;
     float modulationAmount = 0.0f;
@@ -171,7 +162,7 @@ public:
     }
     void printDebug() const
     {
-        DBG (paramID + " : " + juce::String (getIndex())); // Using getIndex() for ChoiceParameter
+        DBG(paramID + " : " + juce::String(getIndex())); // Using getIndex() for ChoiceParameter
     }
 
     using Ptr = OptionalPointer<ChoiceParameter>;
@@ -187,21 +178,19 @@ public:
     void setParameterValue (int newValue) { AudioParameterChoice::operator= (newValue); }
 
     // bitklavier::ParameterChangeBuffer stateChanges;
-    void setRangeToValueTree (const juce::ValueTree& vt) {}
+    void setRangeToValueTree(const juce::ValueTree& vt){}
     juce::ValueTree& getModParam()
-    {
-        return modulatable_param;
+   {
+    return modulatable_param;
+
     }
-    void setParamOffsetIndex (int val)
-    {
+    void setParamOffsetIndex(int val) {
         param_offset_index = val;
     }
-    int getParamOffsetIndex()
-    {
+    int getParamOffsetIndex() {
         return param_offset_index;
     }
-    float getCurrentValue() const noexcept { return 0.f; }
-
+    float getCurrentValue() const noexcept{return 0.f;}
 private:
     int param_offset_index = -1;
     juce::ValueTree modulatable_param;
@@ -231,10 +220,10 @@ public:
                          EnumType defaultChoice,
                          const std::initializer_list<std::pair<char, char>>& charMap = { { '_', ' ' } })
         : ChoiceParameter (
-              parameterID,
-              parameterName,
-              EnumHelpers::createStringArray<EnumType> (charMap),
-              static_cast<int> (*magic_enum::enum_index (defaultChoice)))
+            parameterID,
+            parameterName,
+            EnumHelpers::createStringArray<EnumType> (charMap),
+            static_cast<int> (*magic_enum::enum_index (defaultChoice)))
     {
     }
 
@@ -244,18 +233,20 @@ public:
     }
     void printDebug() const
     {
-        DBG (paramID + " : " + juce::String (static_cast<int> (get())));
+        DBG(paramID + " : " + juce::String(static_cast<int>(get())));
     }
-    void processStateChanges() override
-    {
-        for (const auto& [index, change] : stateChanges.changeState)
-        {
-            auto val = change.getProperty (paramID);
-            if (! val.isUndefined())
+    void processStateChanges() override {
+        for (const auto& [index, change] : stateChanges.changeState) {
+            auto val = change.getProperty(paramID);
+<<<<<<< HEAD
+            if (val != nullVar || roundToInt(val) == 0) {
+=======
+            if (!val.isUndefined())
             {
+>>>>>>> f379632377027e54e88c2623f9fd8aadaf821960
                 int n = val;
-                EnumType t = static_cast<EnumType> (1 << n);
-                setParameterValue (t);
+                EnumType t = static_cast<EnumType>(1<<n);
+                setParameterValue(t);
             }
         }
         stateChanges.changeState.clear();
@@ -270,6 +261,8 @@ public:
 
     using Ptr = OptionalPointer<EnumChoiceParameter>;
 
+
+
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnumChoiceParameter)
 };
@@ -277,7 +270,7 @@ private:
 /** Wrapper of juce::AudioParameterBool that does not support modulation. */
 class BoolParameter : public juce::AudioParameterBool,
                       public ParamUtils::ModParameterMixin,
-                      public bitklavier::StateChangeableParameter
+    public bitklavier::StateChangeableParameter
 {
 public:
     BoolParameter (const ParameterID& parameterID, const juce::String& parameterName, bool defaultBoolValue)
@@ -286,7 +279,7 @@ public:
     }
     void printDebug() const
     {
-        DBG (paramID + " : " + juce::String (static_cast<int> (get())));
+        DBG(paramID + " : " + juce::String(static_cast<int>(get())));
     }
     using Ptr = OptionalPointer<BoolParameter>;
 
@@ -296,33 +289,27 @@ public:
      * Especially if calling this from the audio thread!
      */
     void setParameterValue (bool newValue) { AudioParameterBool::operator= (newValue); }
-    void processStateChanges() override
-    {
+    void processStateChanges() override {
         static juce::var nullVar;
-        for (const auto& [index, change] : stateChanges.changeState)
-        {
-            auto val = change.getProperty (paramID);
-            if (val != nullVar)
-            {
-                setParameterValue (val);
+        for (const auto& [index, change] : stateChanges.changeState) {
+            auto val = change.getProperty(paramID);
+            if (val != nullVar) {
+                setParameterValue(val);
             }
         }
         stateChanges.changeState.clear();
     }
-    void setRangeToValueTree (const juce::ValueTree& vt) {}
-    juce::ValueTree& getModParam()
-    {
+    void setRangeToValueTree(const juce::ValueTree& vt){}
+    juce::ValueTree& getModParam() {
         return modulatable_param;
     }
-    void setParamOffsetIndex (int val)
-    {
+   void setParamOffsetIndex(int val) {
         param_offset_index = val;
     }
-    int getParamOffsetIndex()
-    {
+    int getParamOffsetIndex() {
         return param_offset_index;
     }
-    float getCurrentValue() const noexcept { return 0.f; }
+    float getCurrentValue() const noexcept{return 0.f;}
 
 private:
     int param_offset_index = -1;
@@ -337,16 +324,13 @@ public:
     PercentParameter (const ParameterID& parameterID,
                       const juce::String& paramName,
                       float defaultValue = 0.5f,
-                      bool isBipolar = false,
-                      const juce::ValueTree& v = {})
+                      bool isBipolar = false,const juce::ValueTree& v={})
         : FloatParameter (parameterID,
                           paramName,
                           juce::NormalisableRange { isBipolar ? -1.0f : 0.0f, 1.0f },
                           defaultValue,
                           &ParamUtils::percentValToString,
-                          &ParamUtils::stringToPercentVal,
-                          true,
-                          v)
+                          &ParamUtils::stringToPercentVal,true,v)
     {
     }
 
@@ -364,16 +348,15 @@ public:
                      const juce::String& paramName,
                      const juce::NormalisableRange<float>& paramRange,
                      float defaultValue,
-                     bool mod = false,
-                     const juce::ValueTree& v = {})
+                     bool mod=false,
+                     const juce::ValueTree& v={})
         : FloatParameter (parameterID,
                           paramName,
                           paramRange,
                           defaultValue,
                           &ParamUtils::gainValToString,
                           &ParamUtils::stringToGainVal,
-                          true,
-                          v)
+                          true,v)
     {
     }
 
@@ -390,16 +373,13 @@ public:
     FreqHzParameter (const ParameterID& parameterID,
                      const juce::String& paramName,
                      const juce::NormalisableRange<float>& paramRange,
-                     float defaultValue,
-                     const juce::ValueTree& v = {})
+                     float defaultValue,const juce::ValueTree& v={})
         : FloatParameter (parameterID,
                           paramName,
                           paramRange,
                           defaultValue,
                           &ParamUtils::freqValToString,
-                          &ParamUtils::stringToFreqVal,
-                          true,
-                          v)
+                          &ParamUtils::stringToFreqVal,true,v)
     {
     }
 
@@ -417,16 +397,14 @@ public:
                      const juce::String& paramName,
                      const juce::NormalisableRange<float>& paramRange,
                      float defaultValue,
-                     bool mod = false,
-                     const juce::ValueTree& v = {})
+                     bool mod=false,const juce::ValueTree& v={})
         : FloatParameter (parameterID,
                           paramName,
                           paramRange,
                           defaultValue,
                           &ParamUtils::timeMsValToString,
                           &ParamUtils::stringToTimeMsVal,
-                          mod,
-                          v)
+                          mod,v)
     {
     }
 
@@ -443,16 +421,13 @@ public:
     RatioParameter (const ParameterID& parameterID,
                     const juce::String& paramName,
                     const juce::NormalisableRange<float>& paramRange,
-                    float defaultValue,
-                    const juce::ValueTree& v = {})
+                    float defaultValue,const juce::ValueTree& v={})
         : FloatParameter (parameterID,
                           paramName,
                           paramRange,
                           defaultValue,
                           &ParamUtils::ratioValToString,
-                          &ParamUtils::stringToRatioVal,
-                          false,
-                          v)
+                          &ParamUtils::stringToRatioVal,false,v)
     {
     }
 
@@ -472,18 +447,15 @@ public:
                         const juce::String& paramName,
                         juce::NormalisableRange<float> paramRange,
                         float defaultValue,
-                        bool snapToInt = false,
-                        const juce::ValueTree& v = {})
+                        bool snapToInt = false,const juce::ValueTree& v={})
         : FloatParameter (
-              parameterID,
-              paramName,
-              (paramRange.interval = snapToInt ? 1.0f : paramRange.interval, paramRange),
-              defaultValue,
-              [snapToInt] (float val)
-              { return ParamUtils::semitonesValToString (val, snapToInt); },
-              &ParamUtils::stringToSemitonesVal,
-              false,
-              v)
+            parameterID,
+            paramName,
+            (paramRange.interval = snapToInt ? 1.0f : paramRange.interval, paramRange),
+            defaultValue,
+            [snapToInt] (float val)
+            { return ParamUtils::semitonesValToString (val, snapToInt); },
+            &ParamUtils::stringToSemitonesVal,false,v)
     {
     }
     JUCE_END_IGNORE_WARNINGS_GCC_LIKE
