@@ -124,7 +124,7 @@ public:
     }
 
     using ParamPtrVariant = std::variant<chowdsp::FloatParameter*, chowdsp::ChoiceParameter*, chowdsp::BoolParameter*>;
-    std::vector<ParamPtrVariant> modulatableParams;
+    std::vector<chowdsp::FloatParameter*> modulatableParams;
 private:
     void add() const
     {

@@ -239,7 +239,7 @@ public:
         static juce::var nullVar;
         for (const auto& [index, change] : stateChanges.changeState) {
             auto val = change.getProperty(paramID);
-            if (val != nullVar) {
+            if (val != nullVar || roundToInt(val) == 0) {
                 int n = val;
                 EnumType t = static_cast<EnumType>(1<<n);
                 setParameterValue(t);
