@@ -1,5 +1,6 @@
 #include "chowdsp_ParameterTypes.h"
 
+#include <defs.h>
 #include <utility>
 
 namespace chowdsp
@@ -8,7 +9,7 @@ FloatParameter::FloatParameter (const ParameterID& parameterID,
                                 const juce::String& parameterName,
                                 const juce::NormalisableRange<float>& valueRange,
                                 float defaultFloatValue,
-                                std::array<std::atomic<float>**,12>& voice_ptrs,
+                                std::array<std::atomic<float>**,MAX_NUM_VOICES>& voice_ptrs,
                                 const std::function<void ( float)>& setterFunc,
                                 const std::function<juce::String (float)>& valueToTextFunction,
                                 std::function<float (const juce::String&)>&& textToValueFunction)

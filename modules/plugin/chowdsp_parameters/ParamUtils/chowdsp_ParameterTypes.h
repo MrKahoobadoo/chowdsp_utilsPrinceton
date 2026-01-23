@@ -3,6 +3,7 @@
 #if JUCE_MODULE_AVAILABLE_chowdsp_clap_extensions
 #include <chowdsp_clap_extensions/chowdsp_clap_extensions.h>
 #endif
+#include <defs.h>
 
 namespace chowdsp
 {
@@ -51,7 +52,7 @@ public:
                     const juce::String& parameterName,
                     const juce::NormalisableRange<float>& valueRange,
                     float defaultFloatValue,
-                    std::array<std::atomic<float>**,12> &voice_ptrs,
+                    std::array<std::atomic<float>**,MAX_NUM_VOICES> &voice_ptrs,
                     const std::function<void ( float)>& setterFunc,
                     const std::function<juce::String (float)>& valueToTextFunction,
                     std::function<float (const juce::String&)>&& textToValueFunction);
@@ -126,7 +127,7 @@ class ChoiceParameter : public juce::AudioParameterChoice,
                         public ParamUtils::ModParameterMixin
 {
 public:
-    ChoiceParameter (const ParameterID& parameterID, const juce::String& parameterName,std::array<std::atomic<float>**,12>& voice_ptrs,
+    ChoiceParameter (const ParameterID& parameterID, const juce::String& parameterName,std::array<std::atomic<float>**,MAX_NUM_VOICES>& voice_ptrs,
                          const std::function<void ( float)>& setterFunc, const juce::StringArray& parameterChoices,
         int defaultItemIndex)
         : juce::AudioParameterChoice (parameterID, parameterName, parameterChoices, defaultItemIndex),
@@ -176,7 +177,7 @@ public:
                          const juce::String& parameterName,
                          EnumType defaultChoice,
 
-                         std::array<std::atomic<float>**,12> &voice_ptrs,
+                         std::array<std::atomic<float>**,MAX_NUM_VOICES> &voice_ptrs,
                          const std::function<void ( float)>& setterFunc,
                          const std::initializer_list<std::pair<char, char>>& charMap = { { '_', ' ' } })
         : ChoiceParameter (
@@ -210,7 +211,7 @@ class BoolParameter : public juce::AudioParameterBool,
                       public ParamUtils::ModParameterMixin
 {
 public:
-    BoolParameter (const ParameterID& parameterID, const juce::String& parameterName, bool defaultBoolValue,std::array<std::atomic<float>**,12>& voice_ptrs,
+    BoolParameter (const ParameterID& parameterID, const juce::String& parameterName, bool defaultBoolValue,std::array<std::atomic<float>**,MAX_NUM_VOICES>& voice_ptrs,
                     const std::function<void ( float)>& setterFunc)
         : juce::AudioParameterBool (parameterID, parameterName,  defaultBoolValue)
     {
@@ -240,7 +241,7 @@ class PercentParameter : public FloatParameter
 public:
     PercentParameter (const ParameterID& parameterID,
                       const juce::String& paramName,
-                      std::array<std::atomic<float>**,12> &voice_ptrs,
+                      std::array<std::atomic<float>**,MAX_NUM_VOICES> &voice_ptrs,
                       const std::function<void (float)>& setterFunc,
                       float defaultValue = 0.5f,
                       bool isBipolar = false)
@@ -269,7 +270,7 @@ public:
                      const juce::String& paramName,
                      const juce::NormalisableRange<float>& paramRange,
                      float defaultValue,
-                     std::array<std::atomic<float>**,12>& voice_ptrs,
+                     std::array<std::atomic<float>**,MAX_NUM_VOICES>& voice_ptrs,
                      const std::function<void ( float)>& setterFunc)
         : FloatParameter (parameterID,
                           paramName,
@@ -296,7 +297,7 @@ public:
                      const juce::String& paramName,
                      const juce::NormalisableRange<float>& paramRange,
                      float defaultValue,
-                     std::array<std::atomic<float>**,12>& voice_ptrs,
+                     std::array<std::atomic<float>**,MAX_NUM_VOICES>& voice_ptrs,
                      const std::function<void (float)>& setterFunc)
         : FloatParameter (parameterID,
                           paramName,
@@ -323,7 +324,7 @@ public:
                      const juce::String& paramName,
                      const juce::NormalisableRange<float>& paramRange,
                      float defaultValue,
-                     std::array<std::atomic<float>**,12> &voice_ptrs,
+                     std::array<std::atomic<float>**,MAX_NUM_VOICES> &voice_ptrs,
 
                      const std::function<void (float)>& setterFunc)
         : FloatParameter (parameterID,
@@ -351,7 +352,7 @@ public:
                      const juce::String& paramName,
                      const juce::NormalisableRange<float>& paramRange,
                      float defaultValue,
-                     std::array<std::atomic<float>**,12> &voice_ptrs,
+                     std::array<std::atomic<float>**,MAX_NUM_VOICES> &voice_ptrs,
                      const std::function<void ( float)>& setterFunc)
         : FloatParameter (parameterID,
                           paramName,
@@ -376,7 +377,7 @@ class RatioParameter : public FloatParameter
 public:
     RatioParameter (const ParameterID& parameterID,
                     const juce::String& paramName,
-                    std::array<std::atomic<float>**,12> &voice_ptrs,
+                    std::array<std::atomic<float>**,MAX_NUM_VOICES> &voice_ptrs,
                     const std::function<void ( float)>& setterFunc,
                     const juce::NormalisableRange<float>& paramRange,
                     float defaultValue)
@@ -403,7 +404,7 @@ class SemitonesParameter : public FloatParameter
 public:
     SemitonesParameter (const ParameterID& parameterID,
                         const juce::String& paramName,
-                    std::array<std::atomic<float>**,12> &voice_ptrs,
+                    std::array<std::atomic<float>**,MAX_NUM_VOICES> &voice_ptrs,
                         const std::function<void ( float)>& setterFunc,
                         juce::NormalisableRange<float> paramRange,
                         float defaultValue,
