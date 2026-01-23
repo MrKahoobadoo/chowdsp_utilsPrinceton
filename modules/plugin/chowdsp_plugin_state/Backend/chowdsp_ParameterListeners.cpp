@@ -23,6 +23,7 @@ ParameterListeners::ParameterListeners (ParamHolder& parameters,
 
 ParameterListeners::~ParameterListeners()
 {
+    stopTimer();
     for (auto& paramInfo : paramInfoList)
         paramInfo.paramCookie->removeListener (this);
 }

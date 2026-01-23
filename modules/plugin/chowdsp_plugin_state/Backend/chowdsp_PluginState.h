@@ -13,7 +13,9 @@ class PluginState
 {
 public:
     PluginState() = default;
-    virtual ~PluginState() = default;
+    virtual ~PluginState() {
+        mainThreadAction.stopTimer();
+    }
 
     /** Initialises the plugin state with a given set of parameters. */
     void initialise (ParamHolder& parameters,
