@@ -29,6 +29,19 @@ struct ParameterChangeBuffer
         return true;
     }
 };
+
+// orig
+// struct ParameterChangeBuffer
+// {
+//     ParameterChangeBuffer()
+//     {
+//         changeState.reserve (10);
+//     }
+//
+//     std::vector<std::pair<int, juce::ValueTree>> changeState = {};
+//     juce::ValueTree defaultState;
+// };
+
 class StateChangeableParameter
 {
 public:
