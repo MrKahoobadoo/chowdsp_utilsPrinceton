@@ -14,8 +14,20 @@ struct ParameterChangeBuffer
         changeState.reserve (10);
     }
 
+    // Lightweight synchronisation for cross-thread access to changeState.
+    juce::SpinLock changeLock;
     std::vector<std::pair<int, juce::ValueTree>> changeState = {};
     juce::ValueTree defaultState;
+
+    // Try to push without blocking; drop if contended to keep audio thread safe.
+    bool tryPush (int index, const juce::ValueTree& vt)
+    {
+        juce::SpinLock::ScopedTryLockType lock { changeLock };
+        if (! lock.isLocked())
+            return false;
+        changeState.emplace_back (index, vt);
+        return true;
+    }
 };
 class StateChangeableParameter
 {
@@ -25,7 +37,8 @@ public:
     bitklavier::ParameterChangeBuffer stateChanges;
     void push_change (std::pair<int, juce::ValueTree>&& x)
     {
-        stateChanges.changeState.push_back (x);
+        // Use the non-blocking push; if it fails due to contention, drop the event.
+        stateChanges.tryPush (x.first, x.second);
     }
 };
 } // namespace bitklavier
