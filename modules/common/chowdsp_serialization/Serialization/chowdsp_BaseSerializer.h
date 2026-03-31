@@ -236,7 +236,7 @@ public:
         {
 
             Serializer::addChildElement (parent, "x", (point.x) );
-            Serializer::addChildElement (parent, "y" (point.y));
+            Serializer::addChildElement (parent, "y", (point.y));
             return parent;
         }
 
